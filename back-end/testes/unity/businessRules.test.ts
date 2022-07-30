@@ -85,3 +85,58 @@ describe("downvote on video", () => {
     expect(promisse).rejects.toEqual({type: "not_found", message: ""})
   })
 })
+
+describe("list last recommendations", ()=>{
+  it("shold return last recomendations", async() => {
+    jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce(():any => {return null})
+    await recommendationService.get()
+    expect(recommendationRepository.findAll).toBeCalled()
+  })
+})
+
+describe("get an randon recomendation", ()=>{
+  it("shold return an recommendation score for score > 0.7", async() => {
+    const recommendation = [{
+      id: 1,
+      name: "string",
+      youtubeLink: "https://www.youtube.com/shorts/i0zptaVOTxA",
+      score: 4
+    }]
+    jest.spyOn(Math, "random").mockReturnValueOnce(0.8)
+    jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce((): any => {return recommendation})
+    const response = await recommendationService.getRandom()
+    expect(response.name).toEqual(recommendation[0].name)
+  })
+  it("shold return an recommendation score for score < 0.7", async() => {
+    const recommendation = [{
+      id: 1,
+      name: "string",
+      youtubeLink: "https://www.youtube.com/shorts/i0zptaVOTxA",
+      score: 4
+    }]
+    jest.spyOn(Math, "random").mockReturnValueOnce(0.6)
+    jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce((): any => {return recommendation})
+    const response = await recommendationService.getRandom()
+    expect(response.name).toEqual(recommendation[0].name)
+  })
+  it("should fail if there are no recommendations", async() => {
+    const recommendation = []
+    jest.spyOn(Math, "random").mockReturnValueOnce(0.6)
+    jest.spyOn(recommendationRepository, "findAll").mockImplementationOnce((): any => {return recommendation})
+    const response = recommendationService.getRandom()
+    expect(response).rejects.toEqual({type: "not_found", message: ""})
+  })
+})
+describe("list top score recommendations", ()=>{
+  const recommendation = {
+    id: 1,
+    name: "string",
+    youtubeLink: "https://www.youtube.com/shorts/i0zptaVOTxA",
+    score: 4
+  }
+  it("shold return list recommendations", async() => {
+    jest.spyOn(recommendationRepository, "getAmountByScore").mockImplementationOnce((): any => {return recommendation})
+    const response = await recommendationService.getTop(1)
+    expect(response).toEqual(recommendation)
+  })
+})
