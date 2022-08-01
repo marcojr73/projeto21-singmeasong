@@ -1,5 +1,4 @@
 import { jest } from "@jest/globals";
-import { faker } from "@faker-js/faker";
 
 import { recommendationService } from "../../src/services/recommendationsService.js";
 import { recommendationRepository } from "../../src/repositories/recommendationRepository.js";

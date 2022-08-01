@@ -27,7 +27,6 @@ async function downvote(id: number) {
     id,
     "decrement"
   );
-  console.log(updatedRecommendation.score)
   if (updatedRecommendation.score < -5) {
     await recommendationRepository.remove(id);
   }
