@@ -1,12 +1,12 @@
 import { jest } from "@jest/globals";
+import {prisma} from "../../src/database.js"
 
-import { recommendationService } from "../../src/services/recommendationsService.js";
-import { recommendationRepository } from "../../src/repositories/recommendationRepository.js";
+import { recommendationService } from "../../src/services/recommendationsService.js"
+import { recommendationRepository } from "../../src/repositories/recommendationRepository.js"
 
-
-import dotenv from "dotenv"
-dotenv.config()
-console.log("tests running on base" + process.env.DATABASE_URL)
+beforeEach(async ()=> {
+  await prisma.$executeRaw`TRUNCATE TABLE recommendations`
+})
 
 describe("insert recommendations", () => {
   it("should create recommendation", async () => {
@@ -127,13 +127,13 @@ describe("get an randon recomendation", ()=>{
   })
 })
 describe("list top score recommendations", ()=>{
+  it("shold return list recommendations", async() => {
   const recommendation = {
     id: 1,
     name: "string",
     youtubeLink: "https://www.youtube.com/shorts/i0zptaVOTxA",
     score: 4
   }
-  it("shold return list recommendations", async() => {
     jest.spyOn(recommendationRepository, "getAmountByScore").mockImplementationOnce((): any => {return recommendation})
     const response = await recommendationService.getTop(1)
     expect(response).toEqual(recommendation)
