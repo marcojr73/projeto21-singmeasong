@@ -36,7 +36,7 @@ async function createRecommendationBadScore(){
     await prisma.recommendation.update({
         where: { id: recommendation.id},
         data: {
-          score: { ["decrement"]: -6 },
+          score: -6 ,
         },
     })
     return recommendation
