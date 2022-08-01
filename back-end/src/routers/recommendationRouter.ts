@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { recommendationController } from "../controllers/recommendationController.js";
+import dotenv from "dotenv"
+dotenv.config()
 
 const recommendationRouter = Router();
 
@@ -10,5 +12,10 @@ recommendationRouter.get("/top/:amount", recommendationController.getTop);
 recommendationRouter.get("/:id", recommendationController.getById);
 recommendationRouter.post("/:id/upvote", recommendationController.upvote);
 recommendationRouter.post("/:id/downvote", recommendationController.downvote);
+
+if(process.env.NODE_ENV === "test"){
+    console.log("test route")
+    recommendationRouter.delete("/delete", recommendationController.deleteAll);
+}
 
 export default recommendationRouter;
